@@ -17,6 +17,15 @@
         "branch" : "main",
         "revision" : "a7e5c928b52d6b4801cdb8a22993265e5eb220e2"
       }
+    },
+    {
+      "identity" : "musictheory",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cemolcay/MusicTheory.git",
+      "state" : {
+        "revision" : "0457d035d0e4e7af83992bfffc31b094ba7a788f",
+        "version" : "1.4.0"
+      }
     }
   ],
   "version" : 2
