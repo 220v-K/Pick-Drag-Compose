@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "musicalinstrument",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/musical77/MusicalInstrument.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "1fc81b0b749f22bd8e226e578786b1721944d483"
+      }
+    },
+    {
+      "identity" : "musicsymbol",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/musical77/MusicSymbol.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a7e5c928b52d6b4801cdb8a22993265e5eb220e2"
+      }
+    }
+  ],
+  "version" : 2
+}
