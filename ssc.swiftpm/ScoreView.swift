@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ScoreView: View {
-    @State private var selectedChord: Chord?
-    
+    @State var isChordSelecting: Bool = false
+
     var body: some View {
         ZStack {
             GeometryReader { geometry in
@@ -17,15 +17,15 @@ struct ScoreView: View {
                     VStack(spacing: 0) {
                         Spacer(minLength: geometry.size.height * 0.2)
                         ForEach(0..<12) { sectionIndex in
-                            SectionView(selectedChord: $selectedChord)
+                            SectionView()
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
                         }
                     }
                 }
             }
             
-            if let selectedChord = selectedChord {
-                ChordSelectionView(chord: selectedChord)
+            if (isChordSelecting){
+                ChordSelectionView(chord: Chord(text: "C"))
                     .transition(.opacity)
                     .animation(.easeInOut)
             }
@@ -42,7 +42,7 @@ struct ChordSelectionView: View {
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     withAnimation {
-                        chord.selected = false
+                        
                     }
                 }
             
@@ -136,26 +136,30 @@ struct ChordSelectionView: View {
                 .padding(.top)
                 
                 Spacer()
+                
+                HStack{
+                    Button(action: {
+                        
+                    }){
+                        
+                    }
+                }
             }
             .padding()
             .background(Color.white)
             .cornerRadius(16)
             .padding()
        
-            .frame(maxWidth: 400)
+            .frame(maxWidth: 700, maxHeight:500)
             .edgesIgnoringSafeArea(.bottom)
         }
     }
 }
 
-struct Chord: Identifiable {
-    let id = UUID()
-    var text: String
-    var selected: Bool
-}
+
 
 struct SectionView: View {
-    @Binding var selectedChord: Chord?
+//    @Binding var selectedChord: Chord?
     
     var body: some View {
         GeometryReader { geometry in
@@ -171,7 +175,7 @@ struct SectionView: View {
             .stroke(Color.black, lineWidth: 2)
 
             ForEach(0..<4) { barIndex in
-                ChordView(chord: Chord(text: "Cm7", selected: false), selectedChord: $selectedChord)
+                ChordView(chord: Chord(text: "Cm7"))
                     .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
                     .position(x: CGFloat(barIndex) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
             }
@@ -189,29 +193,16 @@ struct SectionView: View {
 
 struct ChordView: View {
     @State var chord: Chord
-    @Binding var selectedChord: Chord?
     
     var body: some View {
         Button(action: {
             withAnimation {
-                if let selectedChord = selectedChord, selectedChord.id == chord.id {
-                    chord.selected = false
-                    self.selectedChord = nil
-                } else {
-                    chord.selected = true
-                    self.selectedChord = chord
-                }
+                
             }
         }) {
             Text(chord.text)
                 .font(.system(size: 14))
         }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
     }
 }
 
