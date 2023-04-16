@@ -19,6 +19,8 @@ struct Chord: Identifiable {
     // seventh(M7, m7, 7)
     var seventh: Seventh = Seventh.none
     
+    var temp: ChordType
+    
     mutating func changeRoot(root: Root){
         self.root = root
         changeText()
@@ -40,9 +42,15 @@ struct Chord: Identifiable {
     mutating func changeText(){
         self.text = self.root.rawValue
         self.text += self.half.rawValue
-        self.text += self.seventh.rawValue
         self.text += self.triad.rawValue
+        self.text += self.seventh.rawValue
+        
     }
+}
+
+enum Add : String{
+    case none = ""
+    case add9 = "add9"
 }
 
 enum Triad : String{
@@ -55,6 +63,7 @@ enum Triad : String{
     case sus4 = "sus4"
     // 6 chord
     case six = "6"
+    case five = "5"
 }
 
 enum Seventh : String{
