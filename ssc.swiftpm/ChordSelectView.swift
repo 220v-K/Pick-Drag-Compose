@@ -10,7 +10,8 @@ import SwiftUI
 
 
 struct ChordSelectionView: View {
-    @State var chord: Chord
+    @Binding var chord: Chord
+    @Binding var isChordSelecting: Bool
     
     var body: some View {
         ZStack {
@@ -21,7 +22,6 @@ struct ChordSelectionView: View {
                         
                     }
                 }
-            
             VStack {
                 // 1. Display current chord status
                 Text(chord.text)
@@ -31,7 +31,7 @@ struct ChordSelectionView: View {
                 HStack {
                     ForEach(["C", "D", "E", "F", "G", "A", "B"], id: \.self) { note in
                         Button(action: {
-                            chord.text = note
+                            chord.changeRoot(root: Root(rawValue: note)!)
                         }) {
                             Text(note)
                                 .padding()
@@ -45,79 +45,64 @@ struct ChordSelectionView: View {
                 
                 // 3. Buttons for sharp and flat
                 HStack {
-                    Button(action: {
-                        chord.text += "♭"
-                    }) {
-                        Text("♭")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "♯"
-                    }) {
-                        Text("♯")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
+                    ForEach(["♭", "♯"], id: \.self) { half in
+                        Button(action: {
+                            chord.changeHalf(half: Half(rawValue: half)!)
+                        }) {
+                            Text(half)
+                                .padding()
+                                .background(Color.white)
+                                .foregroundColor(.black)
+                                .cornerRadius(8)
+                        }
                     }
                 }
                 .padding(.top)
                 
                 // 4. Buttons for chord types
                 HStack {
-                    Button(action: {
-                        chord.text = chord.text.replacingOccurrences(of: "m7", with: "")
-                    }) {
-                        Text("x")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
+                    ForEach(["7", "m7", "M7"], id: \.self) { seven in
+                        Button(action: {
+                            chord.changeSeventh(seventh: Seventh(rawValue: seven)!)
+                        }) {
+                            Text(seven)
+                                .padding()
+                                .background(Color.white)
+                                .foregroundColor(.black)
+                                .cornerRadius(8)
+                        }
                     }
-                    
-                    Button(action: {
-                        chord.text += "M7"
-                    }) {
-                        Text("M7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "m7"
-                    }) {
-                        Text("m7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "7"
-                    }) {
-                        Text("7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
+                }
+                .padding(.top)
+                
+                // 5. Buttons for Triad Changing
+                HStack {
+                    ForEach(["m", "aug", "dim", "sus2", "sus4", "6"], id: \.self) { triad in
+                        Button(action: {
+                            chord.changeTriad(triad: Triad(rawValue: triad)!)
+                        }) {
+                            Text(triad)
+                                .padding()
+                                .background(Color.white)
+                                .foregroundColor(.black)
+                                .cornerRadius(8)
+                        }
                     }
                 }
                 .padding(.top)
                 
                 Spacer()
                 
+                // 완료 버튼
                 HStack{
                     Button(action: {
-                        
+                        isChordSelecting = false
                     }){
-                        
+                        Text("확인")
+                        .padding()
+                        .background(.blue)
+                        .foregroundColor(.black)
+                        .cornerRadius(8)
                     }
                 }
             }

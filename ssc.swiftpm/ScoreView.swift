@@ -11,7 +11,6 @@ import SwiftUI
 struct ScoreView: View {
     @ObservedObject var ChordOB: ChordList = ChordList(count: 8)
     @State var isChordSelecting: Bool = false
-    @State var changingChordIndex: Int = 0
     
     var body: some View {
         ZStack {
@@ -28,9 +27,9 @@ struct ScoreView: View {
             }
             
             if (isChordSelecting){
-                ChordSelectionView(chord: Chord())
-                    .transition(.opacity)
-                    .animation(.easeInOut)
+                ChordSelectionView(chord: $ChordOB.chords[ChordOB.changingChordIndex], isChordSelecting: $isChordSelecting)
+                .transition(.opacity)
+                .animation(.easeInOut)
             }
         }
     }
@@ -38,6 +37,7 @@ struct ScoreView: View {
 
 class ChordList: ObservableObject {
     @Published var chords: [Chord] = []
+    @Published var changingChordIndex: Int = 0
     
     init(count: Int) {
         for _ in 0..<count {
@@ -65,19 +65,11 @@ struct SectionView: View {
             }
             .stroke(Color.black, lineWidth: 2)
             
-            
-            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 0], isChordSelecting: $isChordSelecting)
-                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                .position(x: CGFloat(0) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
-            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 1], isChordSelecting: $isChordSelecting)
-                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                .position(x: CGFloat(1) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
-            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 2], isChordSelecting: $isChordSelecting)
-                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                .position(x: CGFloat(2) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
-            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 3], isChordSelecting: $isChordSelecting)
-                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                .position(x: CGFloat(3) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            ForEach(0..<4){ index in
+                ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                    .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                    .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            }
             
             Path { path in
                 path.move(to: CGPoint(x: 20, y: geometry.size.height / 4))
@@ -91,21 +83,21 @@ struct SectionView: View {
 }
 
 struct ChordView: View {
-    @Binding var chord: Chord
+    @ObservedObject var ChordOB : ChordList
     @Binding var isChordSelecting: Bool
+    @State var chordIndex: Int
     
     var body: some View {
-        
         Button(action: {
             withAnimation {
+                ChordOB.changingChordIndex = chordIndex
                 isChordSelecting.toggle()
             }
         }) {
-            Text(chord.text)
+            Text(ChordOB.chords[chordIndex].text)
                 .font(.system(size: 30))
                 .foregroundColor(.black)
         }
-        
     }
 }
 

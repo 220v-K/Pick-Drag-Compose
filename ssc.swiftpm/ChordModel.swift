@@ -17,40 +17,65 @@ struct Chord: Identifiable {
     // maj, min, aug, dim, sus2, sus4, 6..
     var triad: Triad = Triad.none
     // seventh(M7, m7, 7)
-    var seven: Seventh = Seventh.none
+    var seventh: Seventh = Seventh.none
+    
+    mutating func changeRoot(root: Root){
+        self.root = root
+        changeText()
+    }
+    mutating func changeHalf(half: Half){
+        self.half = half
+        changeText()
+    }
+    mutating func changeTriad(triad: Triad){
+        self.triad = triad
+        changeText()
+    }
+    mutating func changeSeventh(seventh: Seventh){
+        self.seventh = seventh
+        changeText()
+    }
+    
+    /// change Chord's Text Value with root, halt, triad, seventh
+    mutating func changeText(){
+        self.text = self.root.rawValue
+        self.text += self.half.rawValue
+        self.text += self.seventh.rawValue
+        self.text += self.triad.rawValue
+    }
 }
 
-enum Seventh{
-    case none
-    case dom7
-    case maj7
-    case min7
-}
-
-enum Triad{
+enum Triad : String{
     // none = Major
-    case none
-    case min
-    case aug
-    case dim
-    case sus2
-    case sus4
+    case none = ""
+    case min = "m"
+    case aug = "aug"
+    case dim = "dim"
+    case sus2 = "sus2"
+    case sus4 = "sus4"
     // 6 chord
-    case six
+    case six = "6"
 }
 
-enum Root{
-    case C
-    case D
-    case E
-    case F
-    case G
-    case A
-    case B
+enum Seventh : String{
+    case none = ""
+    case dom7 = "7"
+    case maj7 = "m7"
+    case min7 = "M7"
 }
 
-enum Half{
-    case none
-    case flat
-    case sharp
+enum Root : String{
+    case C = "C"
+    case D = "D"
+    case E = "E"
+    case F = "F"
+    case G = "G"
+    case A = "A"
+    case B = "B"
+}
+
+enum Half : String{
+    case none = ""
+    case flat = "♭"
+    case sharp = "♯"
 }
