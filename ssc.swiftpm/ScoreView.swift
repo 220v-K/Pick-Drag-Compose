@@ -7,17 +7,20 @@
 //
 import SwiftUI
 
-struct ScoreView: View {
-    @State var isChordSelecting: Bool = false
 
+struct ScoreView: View {
+    @ObservedObject var ChordOB: ChordList = ChordList(count: 8)
+    @State var isChordSelecting: Bool = false
+    @State var changingChordIndex: Int = 0
+    
     var body: some View {
         ZStack {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 0) {
                         Spacer(minLength: geometry.size.height * 0.2)
-                        ForEach(0..<12) { sectionIndex in
-                            SectionView()
+                        ForEach(0..<Int(ceil(Double(ChordOB.chords.count / 4)))) { sectionIndex in
+                            SectionView(ChordOB: ChordOB, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
                         }
                     }
@@ -25,7 +28,7 @@ struct ScoreView: View {
             }
             
             if (isChordSelecting){
-                ChordSelectionView(chord: Chord(text: "C"))
+                ChordSelectionView(chord: Chord())
                     .transition(.opacity)
                     .animation(.easeInOut)
             }
@@ -33,133 +36,21 @@ struct ScoreView: View {
     }
 }
 
-struct ChordSelectionView: View {
-    @State var chord: Chord
+class ChordList: ObservableObject {
+    @Published var chords: [Chord] = []
     
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.4)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture {
-                    withAnimation {
-                        
-                    }
-                }
-            
-            VStack {
-                // 1. Display current chord status
-                Text(chord.text)
-                    .font(.system(size: 24, weight: .bold))
-                
-                // 2. Buttons to choose the base note
-                HStack {
-                    ForEach(["C", "D", "E", "F", "G", "A", "B"], id: \.self) { note in
-                        Button(action: {
-                            chord.text = note
-                        }) {
-                            Text(note)
-                                .padding()
-                                .background(Color.white)
-                                .foregroundColor(.black)
-                                .cornerRadius(8)
-                        }
-                    }
-                }
-                .padding(.top)
-                
-                // 3. Buttons for sharp and flat
-                HStack {
-                    Button(action: {
-                        chord.text += "♭"
-                    }) {
-                        Text("♭")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "♯"
-                    }) {
-                        Text("♯")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                }
-                .padding(.top)
-                
-                // 4. Buttons for chord types
-                HStack {
-                    Button(action: {
-                        chord.text = chord.text.replacingOccurrences(of: "m7", with: "")
-                    }) {
-                        Text("x")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "M7"
-                    }) {
-                        Text("M7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "m7"
-                    }) {
-                        Text("m7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                    
-                    Button(action: {
-                        chord.text += "7"
-                    }) {
-                        Text("7")
-                            .padding()
-                            .background(Color.white)
-                            .foregroundColor(.black)
-                            .cornerRadius(8)
-                    }
-                }
-                .padding(.top)
-                
-                Spacer()
-                
-                HStack{
-                    Button(action: {
-                        
-                    }){
-                        
-                    }
-                }
-            }
-            .padding()
-            .background(Color.white)
-            .cornerRadius(16)
-            .padding()
-       
-            .frame(maxWidth: 700, maxHeight:500)
-            .edgesIgnoringSafeArea(.bottom)
+    init(count: Int) {
+        for _ in 0..<count {
+            chords.append(Chord())
         }
     }
 }
 
 
-
 struct SectionView: View {
-//    @Binding var selectedChord: Chord?
+    @ObservedObject var ChordOB : ChordList
+    @State var SectionIndex: Int
+    @Binding var isChordSelecting: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -173,13 +64,21 @@ struct SectionView: View {
                 }
             }
             .stroke(Color.black, lineWidth: 2)
-
-            ForEach(0..<4) { barIndex in
-                ChordView(chord: Chord(text: "Cm7"))
-                    .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                    .position(x: CGFloat(barIndex) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
-            }
-
+            
+            
+            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 0], isChordSelecting: $isChordSelecting)
+                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                .position(x: CGFloat(0) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 1], isChordSelecting: $isChordSelecting)
+                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                .position(x: CGFloat(1) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 2], isChordSelecting: $isChordSelecting)
+                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                .position(x: CGFloat(2) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            ChordView(chord: $ChordOB.chords[SectionIndex * 4 + 3], isChordSelecting: $isChordSelecting)
+                .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                .position(x: CGFloat(3) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+            
             Path { path in
                 path.move(to: CGPoint(x: 20, y: geometry.size.height / 4))
                 path.addLine(to: CGPoint(x: geometry.size.width - 20, y: geometry.size.height / 4))
@@ -192,17 +91,21 @@ struct SectionView: View {
 }
 
 struct ChordView: View {
-    @State var chord: Chord
+    @Binding var chord: Chord
+    @Binding var isChordSelecting: Bool
     
     var body: some View {
+        
         Button(action: {
             withAnimation {
-                
+                isChordSelecting.toggle()
             }
         }) {
             Text(chord.text)
-                .font(.system(size: 14))
+                .font(.system(size: 30))
+                .foregroundColor(.black)
         }
+        
     }
 }
 
