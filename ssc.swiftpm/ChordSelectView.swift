@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct ChordSelectionView: View {
     @Binding var chord: Chord
     @Binding var isChordSelecting: Bool
@@ -70,7 +68,7 @@ struct ChordSelectionView: View {
                 
                 // 4. Buttons for seventh chord
                 HStack {
-                    ForEach(["", "7", "M7", "6", "M6"], id: \.self) { seven in
+                    ForEach(["", "7", "M7", "6"], id: \.self) { seven in
                         Button(action: {
                             chord.changeSeventh(seventh: Seventh(rawValue: seven)!)
                         }) {
@@ -134,7 +132,9 @@ struct ChordSelectionView: View {
                 // 완료 버튼
                 HStack{
                     Button(action: {
-                        isChordSelecting = false
+                        withAnimation {
+                            isChordSelecting = false
+                        }
                     }){
                         Text("OK")
                             .font(.system(size: 23, weight: .bold))

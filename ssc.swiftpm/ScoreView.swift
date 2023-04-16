@@ -6,7 +6,7 @@
 //
 //
 import SwiftUI
-
+import MusicalInstrument
 
 struct ScoreView: View {
     @ObservedObject var ChordOB: ChordList = ChordList(count: 8)
@@ -17,7 +17,12 @@ struct ScoreView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 0) {
-                        Spacer(minLength: geometry.size.height * 0.2)
+                        Button(action: {
+                            playSong(chords: ChordOB.chords)
+                        }){
+                            Text("for test").foregroundColor(.black)
+                        }
+                        Spacer(minLength: geometry.size.height * 0.1)
                         ForEach(0..<Int(ceil(Double(ChordOB.chords.count / 4)))) { sectionIndex in
                             SectionView(ChordOB: ChordOB, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))

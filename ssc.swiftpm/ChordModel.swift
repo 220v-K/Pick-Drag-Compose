@@ -16,10 +16,15 @@ struct Chord: Identifiable {
     var half: Half = Half.none
     // m, sus2, sus4, aug, dim
     var third: Third = Third.none
-    // seventh(M7, m7, 7)
+    // seventh(M7, 7, 6, M6)
     var seventh: Seventh = Seventh.none
     
     var extend: Extend = Extend.none
+    
+    var inversion: Int = 0
+    
+    var beat: Int = 4
+    var octave: Int = 4
     
     mutating func changeRoot(root: Root){
         self.root = root
@@ -85,7 +90,6 @@ enum Seventh : String{
     case dom7 = "7"
     case maj7 = "M7"
     case sixth = "6"
-    case maj6 = "M6"
 }
 
 enum Root : String{
