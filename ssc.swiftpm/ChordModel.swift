@@ -14,12 +14,12 @@ struct Chord: Identifiable {
     var root: Root = Root.C
     // Sharp, Flat
     var half: Half = Half.none
-    // maj, min, aug, dim, sus2, sus4, 6..
-    var triad: Triad = Triad.none
+    // m, sus2, sus4, aug, dim
+    var third: Third = Third.none
     // seventh(M7, m7, 7)
     var seventh: Seventh = Seventh.none
     
-    var temp: ChordType
+    var extend: Extend = Extend.none
     
     mutating func changeRoot(root: Root){
         self.root = root
@@ -29,12 +29,16 @@ struct Chord: Identifiable {
         self.half = half
         changeText()
     }
-    mutating func changeTriad(triad: Triad){
-        self.triad = triad
+    mutating func changeThird(third: Third){
+        self.third = third
         changeText()
     }
     mutating func changeSeventh(seventh: Seventh){
         self.seventh = seventh
+        changeText()
+    }
+    mutating func changeExtend(extend: Extend){
+        self.extend = extend
         changeText()
     }
     
@@ -42,35 +46,46 @@ struct Chord: Identifiable {
     mutating func changeText(){
         self.text = self.root.rawValue
         self.text += self.half.rawValue
-        self.text += self.triad.rawValue
-        self.text += self.seventh.rawValue
         
+        if(["", "m", "dim"].contains(self.third.rawValue)){
+            self.text += self.third.rawValue
+            self.text += self.seventh.rawValue
+        } else {
+            self.text += self.seventh.rawValue
+            self.text += self.third.rawValue
+        }
+        
+        self.text += self.extend.rawValue
     }
 }
 
-enum Add : String{
-    case none = ""
-    case add9 = "add9"
-}
-
-enum Triad : String{
+enum Third : String{
     // none = Major
     case none = ""
     case min = "m"
-    case aug = "aug"
-    case dim = "dim"
     case sus2 = "sus2"
     case sus4 = "sus4"
-    // 6 chord
-    case six = "6"
-    case five = "5"
+    case aug = "aug"
+    case dim = "dim"
+}
+
+// TODO : sharp9, flat9, sharp11, flat11
+enum Extend : String{
+    case none = ""
+    case nineth = "9"
+    case maj9 = "M9"
+    case eleventh = "11"
+    case maj11 = "M11"
+    case thirteenth = "13"
+    case maj13 = "M13"
 }
 
 enum Seventh : String{
     case none = ""
     case dom7 = "7"
-    case maj7 = "m7"
-    case min7 = "M7"
+    case maj7 = "M7"
+    case sixth = "6"
+    case maj6 = "M6"
 }
 
 enum Root : String{

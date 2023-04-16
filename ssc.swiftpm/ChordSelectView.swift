@@ -19,13 +19,14 @@ struct ChordSelectionView: View {
                 .edgesIgnoringSafeArea(.all)
                 .onTapGesture {
                     withAnimation {
-                        
+                        isChordSelecting = false
                     }
                 }
             VStack {
                 // 1. Display current chord status
                 Text(chord.text)
-                    .font(.system(size: 24, weight: .bold))
+                    .font(.system(size: 30, weight: .bold))
+                    .padding(.vertical, 20)
                 
                 // 2. Buttons to choose the base note
                 HStack {
@@ -39,9 +40,9 @@ struct ChordSelectionView: View {
                                 .background(chord.root == Root(rawValue: note)! ? Color.gray : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 1))
                         }
                     }
                 }
@@ -59,17 +60,17 @@ struct ChordSelectionView: View {
                                 .background(chord.half == Half(rawValue: half)! ? Color.gray : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 1))
                         }
                     }
                 }
                 .padding(.top)
                 
-                // 4. Buttons for chord types
+                // 4. Buttons for seventh chord
                 HStack {
-                    ForEach(["", "7", "M7"], id: \.self) { seven in
+                    ForEach(["", "7", "M7", "6", "M6"], id: \.self) { seven in
                         Button(action: {
                             chord.changeSeventh(seventh: Seventh(rawValue: seven)!)
                         }) {
@@ -79,54 +80,51 @@ struct ChordSelectionView: View {
                                 .background(chord.seventh == Seventh(rawValue: seven)! ? Color.gray : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 1))
                         }
                     }
                 }
                 .padding(.top)
                 
+                
                 // 5. Buttons for Triad Changing
                 HStack {
-                    ForEach(["", "m", "aug", "dim", "sus2", "sus4", "5", "6"], id: \.self) { triad in
+                    ForEach(["", "m", "sus2", "sus4", "dim", "aug"], id: \.self) { third in
                         Button(action: {
-                            chord.changeTriad(triad: Triad(rawValue: triad)!)
+                            chord.changeThird(third: Third(rawValue: third)!)
                         }) {
-                            Text(triad)
+                            Text(third)
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.triad == Triad(rawValue: triad)! ? Color.gray : Color.white)
+                                .background(chord.third == Third(rawValue: third)! ? Color.gray : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1))
-                            
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 1))
                         }
-                        
                     }
                 }
                 .padding(.top)
                 
-                // 5. Buttons for Triad Changing
+                // 6. 6, 9, 11코드
                 HStack {
-                    ForEach([], id: \.self) { triad in
+                    ForEach(["", "9", "M9", "11", "M11", "13", "M13"], id: \.self) { extend in
                         Button(action: {
-                            chord.changeTriad(triad: Triad(rawValue: triad)!)
+                            chord.changeExtend(extend: Extend(rawValue: extend)!)
                         }) {
-                            Text(triad)
+                            Text(extend)
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.triad == Triad(rawValue: triad)! ? Color.gray : Color.white)
+                                .background(chord.extend == Extend(rawValue: extend)! ? Color.gray : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 8)
-                                            .stroke(Color.black, lineWidth: 1))
-                            
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 1))
                         }
-                        
                     }
                 }
                 .padding(.top)
@@ -138,11 +136,13 @@ struct ChordSelectionView: View {
                     Button(action: {
                         isChordSelecting = false
                     }){
-                        Text("확인")
-                        .padding()
-                        .background(.blue.opacity(0.6))
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
+                        Text("OK")
+                            .font(.system(size: 23, weight: .bold))
+                            .padding(.vertical, 20).padding(.horizontal, 40)
+                            .background(.blue.opacity(0.6))
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                            .padding(.vertical, 30)
                     }
                 }
             }
@@ -150,8 +150,7 @@ struct ChordSelectionView: View {
             .background(Color.white)
             .cornerRadius(16)
             .padding()
-       
-            .frame(maxWidth: 900, maxHeight:700)
+            .frame(maxWidth: 900, maxHeight:500)
             .edgesIgnoringSafeArea(.bottom)
         }
     }
