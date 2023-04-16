@@ -132,6 +132,7 @@ struct ChordSelectionView: View {
                 // 완료 버튼
                 HStack{
                     Button(action: {
+                        playChord(chord: chord)
                         withAnimation {
                             isChordSelecting = false
                         }

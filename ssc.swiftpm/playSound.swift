@@ -46,6 +46,12 @@ func playBar(chord: Chord){
     piano.pedalOn()
     piano.play(at: Pitch(rawValue: rootPitch-12))
     piano.play(at: Pitch(rawValue: rootPitch-24))
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.9, execute: {
+        piano.stop(at: Pitch(rawValue: rootPitch-12))
+        piano.stop(at: Pitch(rawValue: rootPitch-24))
+    })
+    
+    
     
     var counter = 0 // 반복 횟수
     
@@ -124,5 +130,11 @@ func playChord(chord: Chord){
     for i in pitchList{
         piano.play(at: Pitch(midiNote: i))
     }
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {
+        for i in pitchList{
+            piano.stop(at: Pitch(midiNote: i))
+        }
+    })
 
 }
