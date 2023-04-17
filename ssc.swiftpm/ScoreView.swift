@@ -9,24 +9,62 @@ import SwiftUI
 import MusicalInstrument
 
 struct ScoreView: View {
-    @ObservedObject var ChordOB: ChordList = ChordList(count: 8)
+    @ObservedObject var ChordOB: ChordList = ChordList(count: 8, isEnable: true)
+    @ObservedObject var ChordOB2: ChordList = ChordList(count: 8, isEnable: false)
     @State var isChordSelecting: Bool = false
+    @State var howAccompany: HowAccompany = .Basic
     
     var body: some View {
         ZStack {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 0) {
-                        Button(action: {
-                            playSong(chords: ChordOB.chords)
-                        }){
-                            Text("for test")
-                                .font(.system(size: 30))
+                        HStack{
+                            Button(action: {
+                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords)
+                            }){
+                                Text("Play!")
+                                    .padding()
+                                    .font(.system(size: 30))
+                                    .foregroundColor(.black)
+                                    .background(RoundedRectangle(cornerRadius: 10)
+                                        .strokeBorder(Color.black, lineWidth: 2))
+                                    .cornerRadius(10)
+                            }
+                            //                            Button(action: {
+                            //                                stopSong()
+                            //                            }){
+                            //                                Text("Stop")
+                            //                                    .padding()
+                            //                                    .font(.system(size: 30))
+                            //                                    .foregroundColor(.black)
+                            //                                    .background(RoundedRectangle(cornerRadius: 10)
+                            //                                    .strokeBorder(Color.black, lineWidth: 2))
+                            //                                    .cornerRadius(10)
+                            //                            }
+                        }
+                        
+                        HStack{
+                            Spacer()
+                            Text("How to Play? : ").font(.system(size: 20)).foregroundColor(.black)
+                            Menu(howAccompany.rawValue) {
+                                Button(action: { howAccompany = .Basic }) {
+                                    Text("Basic").font(.system(size: 20)).foregroundColor(.black)
+                                }
+                                Button(action: { howAccompany = .Arpeggio }) {
+                                    Text("Arpeggio").font(.system(size: 20)).foregroundColor(.black)
+                                }
+                            }.padding()
                                 .foregroundColor(.black)
+                                .font(.system(size: 22))
+                                .background(RoundedRectangle(cornerRadius: 10)
+                                    .strokeBorder(Color.black, lineWidth: 2))
+                                .cornerRadius(10)
+                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
                         }
                         Spacer(minLength: geometry.size.height * 0.1)
                         ForEach(0..<Int(ceil(Double(ChordOB.barCnt / 4))), id: \.self) { sectionIndex in
-                            SectionView(ChordOB: ChordOB, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
+                            SectionView(ChordOB: ChordOB, ChordOB2:ChordOB2, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
                         }
                         HStack{
@@ -35,6 +73,7 @@ struct ScoreView: View {
                                 Button(action: {
                                     withAnimation{
                                         ChordOB.removeBar4()
+                                        ChordOB2.removeBar4()
                                     }
                                 }) {
                                     Image(systemName: "minus")
@@ -49,7 +88,8 @@ struct ScoreView: View {
                             // 4마디 추가 버튼
                             Button(action: {
                                 withAnimation{
-                                    ChordOB.addBar4()
+                                    ChordOB.addBar4(isEnable: true)
+                                    ChordOB2.addBar4(isEnable: false)
                                 }
                             }) {
                                 Image(systemName: "plus")
@@ -58,7 +98,7 @@ struct ScoreView: View {
                                     .background(Color.gray)
                                     .foregroundColor(.white)
                                     .clipShape(Circle())
-                                    .frame(width: 50, height: 50) 
+                                    .frame(width: 50, height: 50)
                             }.padding()
                         }
                         
@@ -80,23 +120,23 @@ class ChordList: ObservableObject {
     @Published var changingChordIndex: Int = 0
     @Published var barCnt: Int = 0
     
-    init(count: Int) {
+    init(count: Int, isEnable: Bool) {
         for _ in 0..<count {
-            chords.append(Chord())
+            chords.append(Chord(isEnabled: isEnable))
             barCnt += 1
         }
     }
     
-    func addBar4() {
+    func addBar4(isEnable: Bool) {
         // 이미 생성했다가 줄을 지워서 리스트가 지닌 것이 더 많을 때 (Index out of range 임시해결)
         if (barCnt != chords.count){
             for _ in 0..<4 {
-                chords[barCnt-1] = Chord()
+                chords[barCnt-1] = Chord(isEnabled: isEnable)
                 barCnt += 1
             }
         } else {
             for _ in 0..<4 {
-                chords.append(Chord())
+                chords.append(Chord(isEnabled: isEnable))
                 barCnt += 1
             }
         }
@@ -110,6 +150,7 @@ class ChordList: ObservableObject {
 
 struct SectionView: View {
     @ObservedObject var ChordOB : ChordList
+    @ObservedObject var ChordOB2 : ChordList
     @State var SectionIndex: Int
     @Binding var isChordSelecting: Bool
     
@@ -127,9 +168,36 @@ struct SectionView: View {
             .stroke(Color.black, lineWidth: 2)
             
             ForEach(0..<4){ index in
-                ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
-                    .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                    .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+                let chord2Enabled = ChordOB2.chords[SectionIndex*4+index].isEnabled
+                if chord2Enabled == false {
+                    ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                        .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
+
+                } else {
+                    
+                        ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                            .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                            .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 40, y: geometry.size.height / 2)
+                        ChordView(ChordOB: ChordOB2, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                            .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                            .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 40, y: geometry.size.height / 2)
+                    
+                }
+                Button(action: {
+                    if(chord2Enabled) {
+                        ChordOB2.chords[SectionIndex*4+index].isEnabled = false
+                    } else{
+                        ChordOB2.chords[SectionIndex*4+index].isEnabled = true
+                    }
+                }){
+                    Image(systemName: chord2Enabled ? "minus.circle.fill" : "plus.circle.fill")
+                        .font(.system(size: 25, weight: .medium))
+                        .padding()
+                        .foregroundColor(.gray)
+                        .clipShape(Circle())
+                        .frame(width: 20, height: 20)
+                }.position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 80, y: geometry.size.height / 2 - 30)
             }
             
             Path { path in

@@ -9,6 +9,8 @@ import Foundation
 
 struct Chord: Identifiable {
     let id = UUID()
+    var isEnabled: Bool = true
+    var isSecond: Bool = false
     var text: String = "C"
     // C, D, E, F, G, A, B
     var root: Root = Root.C

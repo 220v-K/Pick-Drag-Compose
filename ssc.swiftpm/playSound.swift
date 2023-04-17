@@ -9,8 +9,12 @@ import Foundation
 import MusicalInstrument
 import MusicSymbol
 
-func playSong(chords: [Chord]){
-    let piano = Piano.default
+//func stopSong(){
+//    Piano.default.stopAll()
+//}
+
+func playSong(chords: [Chord], chords2: [Chord]){
+//    let piano = Piano.default
     var currentIndex = 0
 
     test()
