@@ -20,21 +20,56 @@ struct ScoreView: View {
                         Button(action: {
                             playSong(chords: ChordOB.chords)
                         }){
-                            Text("for test").foregroundColor(.black)
+                            Text("for test")
+                                .font(.system(size: 30))
+                                .foregroundColor(.black)
                         }
                         Spacer(minLength: geometry.size.height * 0.1)
-                        ForEach(0..<Int(ceil(Double(ChordOB.chords.count / 4)))) { sectionIndex in
+                        ForEach(0..<Int(ceil(Double(ChordOB.barCnt / 4))), id: \.self) { sectionIndex in
                             SectionView(ChordOB: ChordOB, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
                         }
+                        HStack{
+                            if(Int(ceil(Double(ChordOB.barCnt / 4))) != 2){
+                                // 4마디 삭제 버튼
+                                Button(action: {
+                                    withAnimation{
+                                        ChordOB.removeBar4()
+                                    }
+                                }) {
+                                    Image(systemName: "minus")
+                                        .font(.system(size: 24, weight: .bold))
+                                        .padding()
+                                        .background(Color.gray)
+                                        .foregroundColor(.white)
+                                        .clipShape(Circle())
+                                        .frame(width: 50, height: 50)
+                                }.padding()
+                            }
+                            // 4마디 추가 버튼
+                            Button(action: {
+                                withAnimation{
+                                    ChordOB.addBar4()
+                                }
+                            }) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 24, weight: .bold))
+                                    .padding()
+                                    .background(Color.gray)
+                                    .foregroundColor(.white)
+                                    .clipShape(Circle())
+                                    .frame(width: 50, height: 50) 
+                            }.padding()
+                        }
+                        
                     }
                 }
             }
             
             if (isChordSelecting){
                 ChordSelectionView(chord: $ChordOB.chords[ChordOB.changingChordIndex], isChordSelecting: $isChordSelecting)
-                .transition(.opacity)
-                .animation(.easeInOut)
+                    .transition(.opacity)
+                    .animation(.easeInOut)
             }
         }
     }
@@ -43,11 +78,32 @@ struct ScoreView: View {
 class ChordList: ObservableObject {
     @Published var chords: [Chord] = []
     @Published var changingChordIndex: Int = 0
+    @Published var barCnt: Int = 0
     
     init(count: Int) {
         for _ in 0..<count {
             chords.append(Chord())
+            barCnt += 1
         }
+    }
+    
+    func addBar4() {
+        // 이미 생성했다가 줄을 지워서 리스트가 지닌 것이 더 많을 때 (Index out of range 임시해결)
+        if (barCnt != chords.count){
+            for _ in 0..<4 {
+                chords[barCnt-1] = Chord()
+                barCnt += 1
+            }
+        } else {
+            for _ in 0..<4 {
+                chords.append(Chord())
+                barCnt += 1
+            }
+        }
+    }
+    
+    func removeBar4(){
+        barCnt -= 4
     }
 }
 

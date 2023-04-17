@@ -11,7 +11,6 @@ import MusicSymbol
 
 func playSong(chords: [Chord]){
     let piano = Piano.default
-
     var currentIndex = 0
 
     test()
@@ -120,9 +119,9 @@ func playChord(chord: Chord){
     case .none:
         break
     case .dom7:
-        pitchList.append(rootPitch+11)
+        pitchList.append(rootPitch+10)
     case .maj7:
-        pitchList.append(rootPitch+12)
+        pitchList.append(rootPitch+11)
     case .sixth:
         pitchList.append(rootPitch+9)
     }
