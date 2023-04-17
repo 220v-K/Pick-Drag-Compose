@@ -12,6 +12,8 @@ struct ScoreView: View {
     @ObservedObject var ChordOB: ChordList = ChordList(count: 8, isEnable: true)
     @ObservedObject var ChordOB2: ChordList = ChordList(count: 8, isEnable: false)
     @State var isChordSelecting: Bool = false
+    // swiftui 너무 화난다.. 아니 뭔 성능때문에 안되는게존재해;
+    @State var isSecondChordSelecting: Bool = false
     @State var howAccompany: HowAccompany = .Basic
     
     var body: some View {
@@ -64,7 +66,7 @@ struct ScoreView: View {
                         }
                         Spacer(minLength: geometry.size.height * 0.1)
                         ForEach(0..<Int(ceil(Double(ChordOB.barCnt / 4))), id: \.self) { sectionIndex in
-                            SectionView(ChordOB: ChordOB, ChordOB2:ChordOB2, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting)
+                            SectionView(ChordOB: ChordOB, ChordOB2:ChordOB2, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting, isSecondChordSelecting: $isSecondChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
                         }
                         HStack{
@@ -111,6 +113,11 @@ struct ScoreView: View {
                     .transition(.opacity)
                     .animation(.easeInOut)
             }
+            if (isSecondChordSelecting){
+                ChordSelectionView(chord: $ChordOB2.chords[ChordOB.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
+                    .transition(.opacity)
+                    .animation(.easeInOut)
+            }
         }
     }
 }
@@ -153,6 +160,7 @@ struct SectionView: View {
     @ObservedObject var ChordOB2 : ChordList
     @State var SectionIndex: Int
     @Binding var isChordSelecting: Bool
+    @Binding var isSecondChordSelecting: Bool
     
     var body: some View {
         GeometryReader { geometry in
@@ -179,7 +187,7 @@ struct SectionView: View {
                         ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
                             .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
                             .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 40, y: geometry.size.height / 2)
-                        ChordView(ChordOB: ChordOB2, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                        ChordView(ChordOB: ChordOB2, isChordSelecting: $isSecondChordSelecting, chordIndex: SectionIndex * 4 + index)
                             .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
                             .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 40, y: geometry.size.height / 2)
                     
