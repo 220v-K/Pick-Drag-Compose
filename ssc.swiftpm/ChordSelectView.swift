@@ -25,6 +25,8 @@ struct ChordSelectionView: View {
                 Text(chord.text)
                     .font(.system(size: 30, weight: .bold))
                     .padding(.vertical, 20)
+                
+                // Change Chord's Inversion
                 HStack{
                     Spacer()
                     Button(action: {
@@ -58,6 +60,40 @@ struct ChordSelectionView: View {
                     Button(action: {
                         if(chord.inversion < 3){
                             chord.inversion += 1
+                        }
+                    }){
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 25, weight: .medium))
+                            .padding()
+                            .foregroundColor(.gray)
+                            .clipShape(Circle())
+                            .frame(width: 20, height: 20)
+                    }
+                }
+                
+                // Change Chord's octave
+                // default: C4(60th. octave 4.)
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        if(chord.octave > 0){
+                            chord.octave -= 1
+                        }
+                    }){
+                        Image(systemName: "minus.circle.fill")
+                            .font(.system(size: 25, weight: .medium))
+                            .padding()
+                            .foregroundColor(.gray)
+                            .clipShape(Circle())
+                            .frame(width: 20, height: 20)
+                    }
+                    Text("Octave :  ").font(.system(size: 20, weight: .bold))
+                        .padding(.horizontal, 10)
+                    Text("\(chord.octave)").font(.system(size: 20, weight: .bold))
+                        .padding(.horizontal, 10)
+                    Button(action: {
+                        if(chord.octave < 7){
+                            chord.octave += 1
                         }
                     }){
                         Image(systemName: "plus.circle.fill")

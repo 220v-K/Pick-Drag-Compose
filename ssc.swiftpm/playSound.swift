@@ -32,12 +32,12 @@ func playSong(chords: [Chord], chords2: [Chord]){
 
 func playBar(chord: Chord, chord2: Chord){
     let piano = Piano.default
-    let noteDict: [String: Int] = ["C": 0, "D": 1, "E": 2, "F": 3, "G": 4, "A": 5, "B": 6]
+    let noteDict: [String: Int] = ["C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11]
     // root음 설정
     var rootPitch: Int = noteDict[chord.root.rawValue] ?? 0
     var rootPitch2: Int = noteDict[chord2.root.rawValue] ?? 0
-    rootPitch += 60
-    rootPitch2 += 60
+    rootPitch += 12*(chord.octave+1)
+    rootPitch2 += 60*(chord.octave+1)
     switch chord.half{
     case .none:
         break
@@ -125,12 +125,12 @@ func playBar(chord: Chord, chord2: Chord){
 
 func playChord(chord: Chord){
     let piano = Piano.default
-    let noteDict: [String: Int] = ["C": 0, "D": 1, "E": 2, "F": 3, "G": 4, "A": 5, "B": 6]
+    let noteDict: [String: Int] = ["C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11]
     var pitchList : [Int] = []
     
     // root음 넣고(Half 따라 조절)
     var rootPitch: Int = noteDict[chord.root.rawValue] ?? 0
-    rootPitch += 60
+    rootPitch += 12*(chord.octave+1)
 //    print(rootPitch)
 //    piano.play(at: Pitch(rawValue: rootPitch))
     switch chord.half{
@@ -194,7 +194,8 @@ func playChord(chord: Chord){
         pitchList.removeFirst()
         pitchList.append(rootPitch+9)
     }
-    
+    print(pitchList)
+    print(chord)
     for i in pitchList{
         piano.play(at: Pitch(midiNote: i))
     }

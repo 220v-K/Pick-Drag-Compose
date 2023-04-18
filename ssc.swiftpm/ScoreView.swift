@@ -205,7 +205,7 @@ struct SectionView: View {
                         .foregroundColor(.gray)
                         .clipShape(Circle())
                         .frame(width: 20, height: 20)
-                }.position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 80, y: geometry.size.height / 2 - 30)
+                }.position(x: CGFloat(index+1) * geometry.size.width / 4 - 20, y: geometry.size.height / 2 - 30)
             }
             
             Path { path in
@@ -245,10 +245,13 @@ struct ChordView: View {
                 case 3:
                     Text("3rd").font(.system(size: 13, weight: .bold))
                         .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-20)
-                        
                 default:
                     Text("").font(.system(size: 13, weight: .bold))
                         .padding(.horizontal, 10)
+                }
+                if(ChordOB.chords[chordIndex].octave != 4){
+                    Text("Oct. \(ChordOB.chords[chordIndex].octave)").font(.system(size: 13, weight: .bold))
+                        .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-36)
                 }
             }
         }
