@@ -24,6 +24,7 @@ struct ScoreView: View {
                         HStack{
                             Button(action: {
                                 playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB)
+                                coloringChord()
                             }){
                                 Text("Play!")
                                     .padding()
@@ -119,6 +120,35 @@ struct ScoreView: View {
                     .animation(.easeInOut)
             }
         }
+    }
+    
+    @State var selectIndex = 0
+    func coloringChord(){
+        if selectIndex == ChordOB.barCnt {
+            selectIndex = 0
+            return
+        }
+        
+        if(ChordOB2.chords[selectIndex].isEnabled == false){
+            ChordOB.chords[selectIndex].isSelected = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                ChordOB.chords[selectIndex].isSelected = false
+            })
+        } else {
+            ChordOB.chords[selectIndex].isSelected = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                ChordOB.chords[selectIndex].isSelected = false
+                ChordOB2.chords[selectIndex].isSelected = true
+            })
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                ChordOB2.chords[selectIndex].isSelected = false
+            })
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            selectIndex += 1
+            coloringChord()
+        })
+        
     }
 }
 
@@ -234,7 +264,7 @@ struct ChordView: View {
             ZStack{
                 Text(ChordOB.chords[chordIndex].text)
                     .font(.system(size: 30))
-                    .foregroundColor(.black)
+                    .foregroundColor(ChordOB.chords[chordIndex].isSelected ? .red : .black)
                 switch ChordOB.chords[chordIndex].inversion{
                 case 1:
                     Text("1st").font(.system(size: 13, weight: .bold))

@@ -214,6 +214,12 @@ struct ChordSelectionView: View {
                         playChord(chord: chord)
                         withAnimation {
                             isChordSelecting = false
+                            chord.isSelected = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+                                withAnimation{
+                                    chord.isSelected = false
+                                }
+                            })
                         }
                     }){
                         Text("OK")

@@ -55,10 +55,15 @@ func playBar(chord: Chord, chord2: Chord){
         rootPitch2 += 1
     }
     
+    piano.pedalOn()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {
+        piano.pedalOff()
+    })
+    
+    
     if (chord2.isEnabled){
         // root음 1, 2옥타브 밑을 근음으로 연주
         // 2박까지 앞 코드
-        piano.pedalOn()
         piano.play(at: Pitch(rawValue: rootPitch-12))
         piano.play(at: Pitch(rawValue: rootPitch-24))
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.9, execute: {
@@ -79,7 +84,6 @@ func playBar(chord: Chord, chord2: Chord){
         })
     }else{
         // root음 1, 2옥타브 밑을 근음으로 연주
-        piano.pedalOn()
         piano.play(at: Pitch(rawValue: rootPitch-12))
         piano.play(at: Pitch(rawValue: rootPitch-24))
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.9, execute: {
@@ -107,6 +111,8 @@ func playBar(chord: Chord, chord2: Chord){
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
             playChord(chord: chord)
         })
+        
+        
     }
     
     func playFourTimes(chord: Chord){
