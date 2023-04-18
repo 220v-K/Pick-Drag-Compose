@@ -13,7 +13,7 @@ import MusicSymbol
 //    Piano.default.stopAll()
 //}
 
-func playSong(chords: [Chord], chords2: [Chord]){
+func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList){
 //    let piano = Piano.default
     var currentIndex = 0
 
@@ -22,7 +22,7 @@ func playSong(chords: [Chord], chords2: [Chord]){
     func test(){
         playBar(chord: chords[currentIndex], chord2: chords2[currentIndex])
         currentIndex += 1
-        if currentIndex == chords.count {
+        if currentIndex == ChordOB.barCnt {
             return
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: test)
@@ -37,7 +37,7 @@ func playBar(chord: Chord, chord2: Chord){
     var rootPitch: Int = noteDict[chord.root.rawValue] ?? 0
     var rootPitch2: Int = noteDict[chord2.root.rawValue] ?? 0
     rootPitch += 12*(chord.octave+1)
-    rootPitch2 += 60*(chord.octave+1)
+    rootPitch2 += 12*(chord.octave+1)
     switch chord.half{
     case .none:
         break
