@@ -114,7 +114,7 @@ struct ScoreView: View {
                     .animation(.easeInOut)
             }
             if (isSecondChordSelecting){
-                ChordSelectionView(chord: $ChordOB2.chords[ChordOB.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
+                ChordSelectionView(chord: $ChordOB2.chords[ChordOB2.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
                     .transition(.opacity)
                     .animation(.easeInOut)
             }
@@ -223,7 +223,7 @@ struct ChordView: View {
     @ObservedObject var ChordOB : ChordList
     @Binding var isChordSelecting: Bool
     @State var chordIndex: Int
-    
+
     var body: some View {
         Button(action: {
             withAnimation {
@@ -231,13 +231,71 @@ struct ChordView: View {
                 isChordSelecting.toggle()
             }
         }) {
-            Text(ChordOB.chords[chordIndex].text)
-                .font(.system(size: 30))
-                .foregroundColor(.black)
+            ZStack{
+                Text(ChordOB.chords[chordIndex].text)
+                    .font(.system(size: 30))
+                    .foregroundColor(.black)
+                switch ChordOB.chords[chordIndex].inversion{
+                case 1:
+                    Text("1st").font(.system(size: 13, weight: .bold))
+                        .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-10)
+                case 2:
+                    Text("2nd").font(.system(size: 13, weight: .bold))
+                        .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-10)
+                case 3:
+                    Text("3rd").font(.system(size: 13, weight: .bold))
+                        .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-10)
+                        
+                default:
+                    Text("").font(.system(size: 13, weight: .bold))
+                        .padding(.horizontal, 10)
+                }
+            }
         }
     }
 }
 
+//struct ChordView: View {
+//    @ObservedObject var ChordOB: ChordList
+//    @Binding var isChordSelecting: Bool
+//    @State var chordIndex: Int
+//    @State private var offset = CGSize.zero // 드래그 추적
+//
+//    var body: some View {
+//        Button(action: {
+//            withAnimation {
+//                ChordOB.changingChordIndex = chordIndex
+//                isChordSelecting.toggle()
+//            }
+//        }) {
+//            ZStack{
+//                Text(ChordOB.chords[chordIndex].text)
+//                    .font(.system(size: 30))
+//                    .foregroundColor(.black)
+//                if(ChordOB.chords[chordIndex].inversion != 0){
+//                    Text("\(ChordOB.chords[chordIndex].inversion)")
+//                        .font(.system(size: 14))
+//                        .foregroundColor(.gray)
+//                        .position(x: -20, y: -20) //위치 조정
+//                }
+//            }
+//        }
+//        .offset(offset) // 드래그한 만큼 뷰를 이동
+//        .gesture(
+//            DragGesture()
+//                .onChanged { value in
+//                    offset = value.translation // 드래그한 양을 추적하여 offset에 할당
+//                }
+//                .onEnded { value in
+//                    // 드래그가 끝나면 offset을 초기화하고 값을 변경
+//                    offset = .zero
+//                    withAnimation {
+//                        ChordOB.chords[chordIndex].inversion += 1
+//                    }
+//                }
+//        )
+//    }
+//}
 
 
 

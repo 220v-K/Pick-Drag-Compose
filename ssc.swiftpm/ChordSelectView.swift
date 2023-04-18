@@ -25,6 +25,49 @@ struct ChordSelectionView: View {
                 Text(chord.text)
                     .font(.system(size: 30, weight: .bold))
                     .padding(.vertical, 20)
+                HStack{
+                    Spacer()
+                    Button(action: {
+                        if(chord.inversion > 0){
+                            chord.inversion -= 1
+                        }
+                    }){
+                        Image(systemName: "minus.circle.fill")
+                            .font(.system(size: 25, weight: .medium))
+                            .padding()
+                            .foregroundColor(.gray)
+                            .clipShape(Circle())
+                            .frame(width: 20, height: 20)
+                    }
+                    Text("Inversion :  ").font(.system(size: 20, weight: .bold))
+                        .padding(.horizontal, 10)
+                    switch chord.inversion{
+                    case 1:
+                        Text("1st").font(.system(size: 20, weight: .bold))
+                            .padding(.horizontal, 10)
+                    case 2:
+                        Text("2nd").font(.system(size: 20, weight: .bold))
+                            .padding(.horizontal, 10)
+                    case 3:
+                        Text("3rd").font(.system(size: 20, weight: .bold))
+                            .padding(.horizontal, 10)
+                    default:
+                        Text("none").font(.system(size: 20, weight: .bold))
+                            .padding(.horizontal, 10)
+                    }
+                    Button(action: {
+                        if(chord.inversion < 3){
+                            chord.inversion += 1
+                        }
+                    }){
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 25, weight: .medium))
+                            .padding()
+                            .foregroundColor(.gray)
+                            .clipShape(Circle())
+                            .frame(width: 20, height: 20)
+                    }
+                }
                 
                 // 2. Buttons to choose the base note
                 HStack {
