@@ -180,14 +180,18 @@ func playChord(chord: Chord){
     }
         
     // 7th, 6th음
+    // 7th, 6th 텐션음이 추가될 시 오른손 Root음 제거
     switch chord.seventh{
     case .none:
         break
     case .dom7:
+        pitchList.removeFirst()
         pitchList.append(rootPitch+10)
     case .maj7:
+        pitchList.removeFirst()
         pitchList.append(rootPitch+11)
     case .sixth:
+        pitchList.removeFirst()
         pitchList.append(rootPitch+9)
     }
     
