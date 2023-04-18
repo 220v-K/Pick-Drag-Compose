@@ -141,28 +141,42 @@ func playChord(chord: Chord){
     case .sharp:
         rootPitch += 1
     }
-    pitchList.append(rootPitch)
+    if (chord.inversion < 1){
+        pitchList.append(rootPitch)
+    } else {
+        // 1st inversion 이상 -> root음 한옥타브 up.
+        pitchList.append(rootPitch+12)
+    }
     
     // 3, 5음 넣기
+    var thirdPitch: Int = rootPitch+4
+    var fifthPitch: Int = rootPitch+7
     switch chord.third{
     case .none:
-        pitchList.append(rootPitch+4)
-        pitchList.append(rootPitch+7)
+        break
     case .min:
-        pitchList.append(rootPitch+3)
-        pitchList.append(rootPitch+7)
+        thirdPitch -= 1
     case .sus2:
-        pitchList.append(rootPitch+2)
-        pitchList.append(rootPitch+7)
+        thirdPitch -= 2
     case .sus4:
-        pitchList.append(rootPitch+5)
-        pitchList.append(rootPitch+7)
+        thirdPitch += 1
     case .aug:
-        pitchList.append(rootPitch+5)
-        pitchList.append(rootPitch+8)
+        fifthPitch += 1
     case .dim:
-        pitchList.append(rootPitch+3)
-        pitchList.append(rootPitch+6)
+        thirdPitch -= 1
+        fifthPitch -= 1
+    }
+    
+    switch chord.inversion{
+    case 2:
+        pitchList.append(thirdPitch+12)
+        pitchList.append(fifthPitch)
+    case 3:
+        pitchList.append(thirdPitch+12)
+        pitchList.append(fifthPitch+12)
+    default:
+        pitchList.append(thirdPitch)
+        pitchList.append(fifthPitch)
     }
         
     // 7th, 6th음
