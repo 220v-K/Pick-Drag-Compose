@@ -22,7 +22,6 @@ func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList, howAccompan
     func playBars(){
         // 밑을 싹 다 1초에 2박으로 처리해놔서, 다 바꾸기 귀찮아서 120으로 처리. 원래는 (60/tempoBPM) 이 맞음.
         let tempoSec: Double = (120/Double(tempoBPM))
-        print(tempoSec)
         playBar(chord: chords[currentIndex], chord2: chords2[currentIndex], howAccompany: howAccompany, tempoSec: tempoSec)
         currentIndex += 1
         if currentIndex == ChordOB.barCnt {

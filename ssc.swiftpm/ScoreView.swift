@@ -242,10 +242,10 @@ struct SectionView: View {
                     
                     ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
                         .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 40, y: geometry.size.height / 2)
+                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 50, y: geometry.size.height / 2)
                     ChordView(ChordOB: ChordOB2, isChordSelecting: $isSecondChordSelecting, chordIndex: SectionIndex * 4 + index)
                         .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 40, y: geometry.size.height / 2)
+                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 50, y: geometry.size.height / 2)
                     
                 }
                 Button(action: {
@@ -261,7 +261,7 @@ struct SectionView: View {
                         .foregroundColor(.gray)
                         .clipShape(Circle())
                         .frame(width: 20, height: 20)
-                }.position(x: CGFloat(index+1) * geometry.size.width / 4 - 20, y: geometry.size.height / 2 - 30)
+                }.position(x: CGFloat(index+1) * geometry.size.width / 4 - ((index == 3) ? 40 : 20), y: geometry.size.height / 2 - 30)
             }
             
             Path { path in
