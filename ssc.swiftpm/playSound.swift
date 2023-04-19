@@ -333,6 +333,20 @@ func playChord(chord: Chord, tempoSec: Double){
         pitchList.append(rootPitch+9)
     }
     
+    // add9, add11, add13
+    if chord.extend_nineth{
+        if pitchList[0] == rootPitch { pitchList.removeFirst() }
+        pitchList.append(rootPitch+14)
+    }
+    if chord.extend_eleventh{
+        if pitchList[0] == rootPitch { pitchList.removeFirst() }
+        pitchList.append(rootPitch+17)
+    }
+    if chord.extend_thirteenth{
+        if pitchList[0] == rootPitch { pitchList.removeFirst() }
+        pitchList.append(rootPitch+21)
+    }
+    
     // playChord's piano Pedal
 //    piano.pedalOn()
     for i in pitchList{

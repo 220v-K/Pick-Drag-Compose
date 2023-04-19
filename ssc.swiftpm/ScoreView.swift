@@ -309,6 +309,24 @@ struct ChordView: View {
                     Text("Oct. \(ChordOB.chords[chordIndex].octave)").font(.system(size: 13, weight: .bold))
                         .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-36)
                 }
+                HStack{
+                    if(ChordOB.chords[chordIndex].extend_nineth || ChordOB.chords[chordIndex].extend_eleventh || ChordOB.chords[chordIndex].extend_thirteenth){
+                        Text("add").font(.system(size: 13, weight: .bold))
+                            .padding(.trailing, 1).foregroundColor(.gray).padding(.leading, 10)
+                    }
+                    if(ChordOB.chords[chordIndex].extend_nineth){
+                        Text("9").font(.system(size: 13, weight: .bold))
+                            .padding(.trailing, 1).foregroundColor(.gray)
+                    }
+                    if(ChordOB.chords[chordIndex].extend_eleventh){
+                        Text("11").font(.system(size: 13, weight: .bold))
+                            .padding(.trailing, 1).foregroundColor(.gray)
+                    }
+                    if(ChordOB.chords[chordIndex].extend_thirteenth){
+                        Text("13").font(.system(size: 13, weight: .bold))
+                            .padding(.trailing, 1).foregroundColor(.gray)
+                    }
+                }.offset(x:-25, y:25)
             }
         }
     }
