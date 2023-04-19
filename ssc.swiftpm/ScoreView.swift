@@ -23,63 +23,66 @@ struct ScoreView: View {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(spacing: 0) {
-                        HStack{
-                            Button(action: {
-                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB, howAccompany: howAccompany, tempoBPM: tempoBPM)
-                                coloringChord(tempoSec: (120/Double(tempoBPM)))
-                            }){
-                                Text("Play!")
-                                    .padding()
-                                    .font(.system(size: 30))
-                                    .foregroundColor(.black)
-                                    .background(RoundedRectangle(cornerRadius: 10)
-                                        .strokeBorder(Color.black, lineWidth: 2))
-                                    .cornerRadius(10)
+                        ZStack{
+                            HStack{
+                                Button(action: {
+                                    playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB, howAccompany: howAccompany, tempoBPM: tempoBPM)
+                                    coloringChord(tempoSec: (120/Double(tempoBPM)))
+                                }){
+                                    Text("Play!")
+                                        .padding()
+                                        .font(.system(size: 30))
+                                        .foregroundColor(.black)
+                                        .background(RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(Color.black, lineWidth: 2))
+                                        .cornerRadius(10)
+                                }
+                                //                            Button(action: {
+                                //                                stopSong()
+                                //                            }){
+                                //                                Text("Stop")
+                                //                                    .padding()
+                                //                                    .font(.system(size: 30))
+                                //                                    .foregroundColor(.black)
+                                //                                    .background(RoundedRectangle(cornerRadius: 10)
+                                //                                    .strokeBorder(Color.black, lineWidth: 2))
+                                //                                    .cornerRadius(10)
+                                //                            }
                             }
-                            //                            Button(action: {
-                            //                                stopSong()
-                            //                            }){
-                            //                                Text("Stop")
-                            //                                    .padding()
-                            //                                    .font(.system(size: 30))
-                            //                                    .foregroundColor(.black)
-                            //                                    .background(RoundedRectangle(cornerRadius: 10)
-                            //                                    .strokeBorder(Color.black, lineWidth: 2))
-                            //                                    .cornerRadius(10)
-                            //                            }
-                        }
-                        
-                        HStack{
-                            Spacer()
-                            Text("How to Play? : ").font(.system(size: 20)).foregroundColor(.black)
-                            Menu(howAccompany.rawValue) {
-                                Button(action: { howAccompany = .Basic }) {
-                                    Text("Basic").font(.system(size: 20)).foregroundColor(.black)
-                                }
-                                Button(action: { howAccompany = .Arpeggio }) {
-                                    Text("Arpeggio").font(.system(size: 20)).foregroundColor(.black)
-                                }
-                            }.padding()
-                                .foregroundColor(.black)
-                                .font(.system(size: 22))
-                                .background(RoundedRectangle(cornerRadius: 10)
-                                    .strokeBorder(Color.black, lineWidth: 2))
-                                .cornerRadius(10)
-                                .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
-                        }
-                        HStack{
-                            Spacer()
-                            Text("♩ = ").font(.system(size: 30, weight: .bold)).foregroundColor(.black)
-                            Picker("♩ = ", selection: $tempoBPM) {
-                                ForEach(60...180, id: \.self) { number in
-                                    Text("\(number)").tag(number).font(.system(size: 20)).foregroundColor(.black)
+                            VStack{
+                                HStack{
+                                    Spacer()
+                                    Text("How to Play? : ").font(.system(size: 20)).foregroundColor(.black)
+                                    Menu(howAccompany.rawValue) {
+                                        Button(action: { howAccompany = .Basic }) {
+                                            Text("Basic").font(.system(size: 20)).foregroundColor(.black)
+                                        }
+                                        Button(action: { howAccompany = .Arpeggio }) {
+                                            Text("Arpeggio").font(.system(size: 20)).foregroundColor(.black)
+                                        }
+                                    }.padding()
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 22))
+                                        .background(RoundedRectangle(cornerRadius: 10)
+                                            .strokeBorder(Color.black, lineWidth: 2))
+                                        .cornerRadius(10)
+                                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
+                                }.padding(.top, 20)
+                                HStack{
+                                    Text("♩ = ").font(.system(size: 30, weight: .bold)).foregroundColor(.black)
+                                    Picker("♩ = ", selection: $tempoBPM) {
+                                        ForEach(60...180, id: \.self) { number in
+                                            Text("\(number)").tag(number).font(.system(size: 20)).foregroundColor(.black)
+                                        }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: 70, height: 120)
+                                    .padding(.leading, 20)
+                                    Spacer()
                                 }
                             }
-                            .pickerStyle(.wheel)
-                            .frame(width: 70, height: 120)
-                            .padding(.trailing, 20)
                         }
-                        Spacer(minLength: geometry.size.height * 0.05)
+//                        Spacer(minLength: geometry.size.height * 0.01)
                         ForEach(0..<Int(ceil(Double(ChordOB.barCnt / 4))), id: \.self) { sectionIndex in
                             SectionView(ChordOB: ChordOB, ChordOB2:ChordOB2, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting, isSecondChordSelecting: $isSecondChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
