@@ -35,26 +35,26 @@ struct ChordSelectionView: View {
                         }
                     }){
                         Image(systemName: "minus.circle.fill")
-                            .font(.system(size: 25, weight: .medium))
+                            .font(.system(size: 30, weight: .medium))
                             .padding()
                             .foregroundColor(.gray)
                             .clipShape(Circle())
-                            .frame(width: 20, height: 20)
+                            .frame(width: 23, height: 23)
                     }
-                    Text("Inversion :  ").font(.system(size: 20, weight: .bold))
+                    Text("Inversion :  ").font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 10)
                     switch chord.inversion{
                     case 1:
-                        Text("1st").font(.system(size: 20, weight: .bold))
+                        Text("1st").font(.system(size: 24, weight: .bold))
                             .padding(.horizontal, 10)
                     case 2:
-                        Text("2nd").font(.system(size: 20, weight: .bold))
+                        Text("2nd").font(.system(size: 24, weight: .bold))
                             .padding(.horizontal, 10)
                     case 3:
-                        Text("3rd").font(.system(size: 20, weight: .bold))
+                        Text("3rd").font(.system(size: 24, weight: .bold))
                             .padding(.horizontal, 10)
                     default:
-                        Text("none").font(.system(size: 20, weight: .bold))
+                        Text("none").font(.system(size: 24, weight: .bold))
                             .padding(.horizontal, 10)
                     }
                     Button(action: {
@@ -63,7 +63,7 @@ struct ChordSelectionView: View {
                         }
                     }){
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 25, weight: .medium))
+                            .font(.system(size: 30, weight: .medium))
                             .padding()
                             .foregroundColor(.gray)
                             .clipShape(Circle())
@@ -81,15 +81,15 @@ struct ChordSelectionView: View {
                         }
                     }){
                         Image(systemName: "minus.circle.fill")
-                            .font(.system(size: 25, weight: .medium))
+                            .font(.system(size: 30, weight: .medium))
                             .padding()
                             .foregroundColor(.gray)
                             .clipShape(Circle())
                             .frame(width: 20, height: 20)
                     }
-                    Text("Octave :  ").font(.system(size: 20, weight: .bold))
+                    Text("Octave :  ").font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 10)
-                    Text("\(chord.octave)").font(.system(size: 20, weight: .bold))
+                    Text("\(chord.octave)").font(.system(size: 24, weight: .bold))
                         .padding(.horizontal, 10)
                     Button(action: {
                         if(chord.octave < 7){
@@ -97,7 +97,7 @@ struct ChordSelectionView: View {
                         }
                     }){
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 25, weight: .medium))
+                            .font(.system(size: 30, weight: .medium))
                             .padding()
                             .foregroundColor(.gray)
                             .clipShape(Circle())
@@ -112,9 +112,10 @@ struct ChordSelectionView: View {
                             chord.changeRoot(root: Root(rawValue: note)!)
                         }) {
                             Text(note)
+                                .font(.system(size:20, weight:.bold))
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.root == Root(rawValue: note)! ? Color.gray : Color.white)
+                                .background(chord.root == Root(rawValue: note)! ? Color.gray.opacity(0.4) : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                                 .overlay(
@@ -132,9 +133,10 @@ struct ChordSelectionView: View {
                             chord.changeHalf(half: Half(rawValue: half)!)
                         }) {
                             Text(half)
+                                .font(.system(size:20, weight:.bold))
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.half == Half(rawValue: half)! ? Color.gray : Color.white)
+                                .background(chord.half == Half(rawValue: half)! ? Color.gray.opacity(0.4) : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                                 .overlay(
@@ -152,9 +154,10 @@ struct ChordSelectionView: View {
                             chord.changeSeventh(seventh: Seventh(rawValue: seven)!)
                         }) {
                             Text(seven)
+                                .font(.system(size:20, weight:.bold))
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.seventh == Seventh(rawValue: seven)! ? Color.gray : Color.white)
+                                .background(chord.seventh == Seventh(rawValue: seven)! ? Color.gray.opacity(0.4) : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                                 .overlay(
@@ -173,9 +176,10 @@ struct ChordSelectionView: View {
                             chord.changeThird(third: Third(rawValue: third)!)
                         }) {
                             Text(third)
+                                .font(.system(size:20, weight:.bold))
                                 .frame(width: 50, height: 25)
                                 .padding()
-                                .background(chord.third == Third(rawValue: third)! ? Color.gray : Color.white)
+                                .background(chord.third == Third(rawValue: third)! ? Color.gray.opacity(0.4) : Color.white)
                                 .foregroundColor(.black)
                                 .cornerRadius(8)
                                 .overlay(
@@ -186,22 +190,49 @@ struct ChordSelectionView: View {
                 }
                 .padding(.top)
                 
-                // 6. 6, 9, 11코드
+                // 6. add9, add11, add13코드
                 HStack {
-                    ForEach(["", "9", "M9", "11", "M11", "13", "M13"], id: \.self) { extend in
-                        Button(action: {
-                            chord.changeExtend(extend: Extend(rawValue: extend)!)
-                        }) {
-                            Text(extend)
-                                .frame(width: 50, height: 25)
-                                .padding()
-                                .background(chord.extend == Extend(rawValue: extend)! ? Color.gray : Color.white)
-                                .foregroundColor(.black)
-                                .cornerRadius(8)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .stroke(Color.black, lineWidth: 1))
-                        }
+                    Button(action: {
+                        chord.changeExtend(num: 9)
+                    }) {
+                        Text("add9")
+                            .font(.system(size:20, weight:.bold))
+                            .frame(width: 80, height: 25)
+                            .padding()
+                            .background(chord.extend_nineth ? Color.red.opacity(0.3) : Color.white)
+                            .foregroundColor(.black)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.black, lineWidth: 1))
+                    }
+                    Button(action: {
+                        chord.changeExtend(num: 11)
+                    }) {
+                        Text("add11")
+                            .font(.system(size:20, weight:.bold))
+                            .frame(width: 80, height: 25)
+                            .padding()
+                            .background(chord.extend_eleventh ? Color.red.opacity(0.3) : Color.white)
+                            .foregroundColor(.black)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.black, lineWidth: 1))
+                    }
+                    Button(action: {
+                        chord.changeExtend(num: 13)
+                    }) {
+                        Text("add13")
+                            .font(.system(size:20, weight:.bold))
+                            .frame(width: 80, height: 25)
+                            .padding()
+                            .background(chord.extend_thirteenth ? Color.red.opacity(0.3) : Color.white)
+                            .foregroundColor(.black)
+                            .cornerRadius(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.black, lineWidth: 1))
                     }
                 }
                 .padding(.top)

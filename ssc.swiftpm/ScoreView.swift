@@ -16,6 +16,7 @@ struct ScoreView: View {
     @State var isSecondChordSelecting: Bool = false
     @State var howAccompany: HowAccompany = .Basic
     @State var tempoBPM: Int = 120
+    @State var isAdvanced: Bool = false
     let accompanyOptions: [HowAccompany] = [.Basic, .Arpeggio]
     
     var body: some View {
@@ -36,6 +37,7 @@ struct ScoreView: View {
                                         .background(RoundedRectangle(cornerRadius: 10)
                                             .strokeBorder(Color.black, lineWidth: 2))
                                         .cornerRadius(10)
+                                        .padding(.bottom, 50)
                                 }
                                 //                            Button(action: {
                                 //                                stopSong()
@@ -69,17 +71,24 @@ struct ScoreView: View {
                                         .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
                                 }.padding(.top, 20)
                                 HStack{
-                                    Text("♩ = ").font(.system(size: 30, weight: .bold)).foregroundColor(.black)
+                                    Text("♩").font(.system(size: 50, weight: .bold)).foregroundColor(.black)
+                                    Text(" = ").font(.system(size: 30, weight: .bold)).foregroundColor(.black)
                                     Picker("♩ = ", selection: $tempoBPM) {
                                         ForEach(60...180, id: \.self) { number in
-                                            Text("\(number)").tag(number).font(.system(size: 20)).foregroundColor(.black)
+                                            Text("\(number)").tag(number).font(.system(size: 22)).foregroundColor(.black)
                                         }
                                     }
                                     .pickerStyle(.wheel)
-                                    .frame(width: 70, height: 120)
-                                    .padding(.leading, 20)
+                                    .frame(width: 70, height: 120).padding(.top, 5)
                                     Spacer()
-                                }
+                                    VStack{
+                                        Text("Advanced Mode ").font(.system(size: 20)).foregroundColor(.black)
+                                        Text("(in Chord Selection)").font(.system(size: 15)).foregroundColor(.gray)
+                                    }
+                                    Toggle("", isOn: $isAdvanced)
+                                        .toggleStyle(SwitchToggleStyle(tint: .green))
+                                        .frame(width: 60)
+                                }.padding(.leading, 30).padding(.trailing, 30)
                             }
                         }
 //                        Spacer(minLength: geometry.size.height * 0.01)

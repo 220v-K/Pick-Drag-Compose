@@ -22,7 +22,9 @@ struct Chord: Identifiable {
     // seventh(M7, 7, 6, M6)
     var seventh: Seventh = Seventh.none
     
-    var extend: Extend = Extend.none
+    var extend_nineth: Bool = false
+    var extend_eleventh: Bool = false
+    var extend_thirteenth: Bool = false
     
     var inversion: Int = 0
     
@@ -45,9 +47,14 @@ struct Chord: Identifiable {
         self.seventh = seventh
         changeText()
     }
-    mutating func changeExtend(extend: Extend){
-        self.extend = extend
-        changeText()
+    mutating func changeExtend(num: Int){
+        if (num == 9){
+            self.extend_nineth.toggle()
+        } else if (num == 11){
+            self.extend_eleventh.toggle()
+        } else if (num == 13){
+            self.extend_thirteenth.toggle()
+        } else {}
     }
     
     /// change Chord's Text Value with root, halt, triad, seventh
@@ -63,7 +70,7 @@ struct Chord: Identifiable {
             self.text += self.third.rawValue
         }
         
-        self.text += self.extend.rawValue
+//        self.text += self.extend.rawValue
     }
 }
 
@@ -78,15 +85,15 @@ enum Third : String{
 }
 
 // TODO : sharp9, flat9, sharp11, flat11
-enum Extend : String{
-    case none = ""
-    case nineth = "9"
-    case maj9 = "M9"
-    case eleventh = "11"
-    case maj11 = "M11"
-    case thirteenth = "13"
-    case maj13 = "M13"
-}
+//enum Extend : String{
+//    case none = ""
+//    case nineth = "9"
+//    case maj9 = "M9"
+//    case eleventh = "11"
+//    case maj11 = "M11"
+//    case thirteenth = "13"
+//    case maj13 = "M13"
+//}
 
 enum Seventh : String{
     case none = ""
