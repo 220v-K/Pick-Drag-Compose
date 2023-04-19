@@ -13,25 +13,28 @@ import MusicSymbol
 //    Piano.default.stopAll()
 //}
 
-func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList, howAccompany: HowAccompany){
+func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList, howAccompany: HowAccompany, tempoBPM: Int){
 //    let piano = Piano.default
     var currentIndex = 0
 
     playBars()
     
     func playBars(){
-        playBar(chord: chords[currentIndex], chord2: chords2[currentIndex], howAccompany: howAccompany)
+        // 밑을 싹 다 1초에 2박으로 처리해놔서, 다 바꾸기 귀찮아서 120으로 처리. 원래는 (60/tempoBPM) 이 맞음.
+        let tempoSec: Double = (120/Double(tempoBPM))
+        print(tempoSec)
+        playBar(chord: chords[currentIndex], chord2: chords2[currentIndex], howAccompany: howAccompany, tempoSec: tempoSec)
         currentIndex += 1
         if currentIndex == ChordOB.barCnt {
             return
         }
         // Recursion Call로 2초마다 재생 구현
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: playBars)
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*2, execute: playBars)
     }
     
 }
 
-func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
+func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany, tempoSec: Double){
     let piano = Piano.default
     let noteDict: [String: Int] = ["C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11]
     // root음 설정
@@ -59,18 +62,18 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
     // 페달링
     if (chord2.isEnabled){
         piano.pedalOn()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.95, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.95, execute: {
             piano.pedalOff()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.99, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.99, execute: {
             piano.pedalOn()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {
             piano.pedalOff()
         })
     } else {
         piano.pedalOn()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {
             piano.pedalOff()
         })
     }
@@ -85,19 +88,19 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
             // 2박까지 앞 코드
             piano.play(at: Pitch(rawValue: rootPitch-12))
             piano.play(at: Pitch(rawValue: rootPitch-24))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.95, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.95, execute: {
                 piano.stop(at: Pitch(rawValue: rootPitch-12))
                 piano.stop(at: Pitch(rawValue: rootPitch-24))
                 piano.pedalOff()
             })
             
             // 3~4박은 뒷 코드
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {
                 piano.play(at: Pitch(rawValue: rootPitch2-12))
                 piano.play(at: Pitch(rawValue: rootPitch2-24))
             })
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {
                 piano.stop(at: Pitch(rawValue: rootPitch2-12))
                 piano.stop(at: Pitch(rawValue: rootPitch2-24))
             })
@@ -105,7 +108,7 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
             // root음 1, 2옥타브 밑을 근음으로 연주
             piano.play(at: Pitch(rawValue: rootPitch-12))
             piano.play(at: Pitch(rawValue: rootPitch-24))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {
                 piano.stop(at: Pitch(rawValue: rootPitch-12))
                 piano.stop(at: Pitch(rawValue: rootPitch-24))
             })
@@ -115,7 +118,7 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
         if (chord2.isEnabled){
             // Chord 1
             piano.play(at: Pitch(rawValue: rootPitch-12))   // 1
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {   // 5
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.25, execute: {   // 5
                 if (chord.third == .aug) {
                     piano.play(at: Pitch(rawValue: rootPitch-4))
                     playedList.append(rootPitch-4)
@@ -127,21 +130,21 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
                     playedList.append(rootPitch-5)
                 }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {    // 8
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.5, execute: {    // 8
                 piano.play(at: Pitch(rawValue: rootPitch))
                 playedList.append(rootPitch)
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.95, execute: {   // stop
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.95, execute: {   // stop
                 for i in playedList {
                     piano.stop(at: Pitch(rawValue: i))
                 }
             })
             // Chord 2
             playedList = []
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {   // 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {   // 1
                 piano.play(at: Pitch(rawValue: rootPitch2-12))
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.25, execute: {   // 5
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.25, execute: {   // 5
                 if (chord.third == .aug) {
                     piano.play(at: Pitch(rawValue: rootPitch2-4))
                     playedList.append(rootPitch2-4)
@@ -153,11 +156,11 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
                     playedList.append(rootPitch2-5)
                 }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {    // 8
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.5, execute: {    // 8
                 piano.play(at: Pitch(rawValue: rootPitch2))
                 playedList.append(rootPitch2)
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {   // stop
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {   // stop
                 for i in playedList {
                     piano.stop(at: Pitch(rawValue: i))
                 }
@@ -165,7 +168,7 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
         } else {
             piano.play(at: Pitch(rawValue: rootPitch-12))   // 1
             playedList.append(rootPitch-12)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {   // 5
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.25, execute: {   // 5
                 if (chord.third == .aug) {
                     piano.play(at: Pitch(rawValue: rootPitch-4))
                     playedList.append(rootPitch-4)
@@ -177,15 +180,15 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
                     playedList.append(rootPitch-5)
                 }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {    // 8
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.5, execute: {    // 8
                 piano.play(at: Pitch(rawValue: rootPitch))
                 playedList.append(rootPitch)
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: {   // 9
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.75, execute: {   // 9
                 piano.play(at: Pitch(rawValue: rootPitch+2))
                 playedList.append(rootPitch+2)
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {    // 10
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {    // 10
                 if (chord.third == .min || chord.third == .dim) {
                     piano.play(at: Pitch(rawValue: rootPitch+3))
                     playedList.append(rootPitch+3)
@@ -194,7 +197,7 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
                     playedList.append(rootPitch+4)
                 }
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.95, execute: {   // stop
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.95, execute: {   // stop
                 for i in playedList {
                     piano.stop(at: Pitch(rawValue: i))
                 }
@@ -211,7 +214,7 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
     if (howAccompany == .Basic){
         if (chord2.isEnabled){
             playTwice(chord: chord)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {
                 playTwice(chord: chord2)
             })
         } else {
@@ -219,14 +222,14 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
         }
     } else if (howAccompany == .Arpeggio) {
         if (chord2.isEnabled){
-            playChord(chord: chord)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                playChord(chord: chord2)
+            playChord(chord: chord, tempoSec: tempoSec)
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {
+                playChord(chord: chord2, tempoSec: tempoSec)
             })
         } else {
-            playChord(chord: chord)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                playChord(chord: chord)
+            playChord(chord: chord, tempoSec: tempoSec)
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {
+                playChord(chord: chord, tempoSec: tempoSec)
             })
         }
     } else {
@@ -236,32 +239,32 @@ func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
     
     func playTwice(chord: Chord){
         // 1초마다 연주
-        playChord(chord: chord)
+        playChord(chord: chord, tempoSec: tempoSec)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-            playChord(chord: chord)
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.5, execute: {
+            playChord(chord: chord, tempoSec: tempoSec)
         })
         
         
     }
 
     func playFourTimes(chord: Chord){
-        playChord(chord: chord)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-            playChord(chord: chord)
+        playChord(chord: chord, tempoSec: tempoSec)
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.5, execute: {
+            playChord(chord: chord, tempoSec: tempoSec)
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-            playChord(chord: chord)
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.0, execute: {
+            playChord(chord: chord, tempoSec: tempoSec)
         })
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
-            playChord(chord: chord)
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1.5, execute: {
+            playChord(chord: chord, tempoSec: tempoSec)
         })
     }
+
 }
 
 
-
-func playChord(chord: Chord){
+func playChord(chord: Chord, tempoSec: Double){
     let piano = Piano.default
     let noteDict: [String: Int] = ["C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11]
     var pitchList : [Int] = []
@@ -269,8 +272,6 @@ func playChord(chord: Chord){
     // root음 넣고(Half 따라 조절)
     var rootPitch: Int = noteDict[chord.root.rawValue] ?? 0
     rootPitch += 12*(chord.octave+1)
-//    print(rootPitch)
-//    piano.play(at: Pitch(rawValue: rootPitch))
     switch chord.half{
     case .none:
         break
@@ -332,8 +333,6 @@ func playChord(chord: Chord){
         pitchList.removeFirst()
         pitchList.append(rootPitch+9)
     }
-    print(pitchList)
-    print(chord)
     
     // playChord's piano Pedal
 //    piano.pedalOn()
@@ -341,7 +340,7 @@ func playChord(chord: Chord){
         piano.play(at: Pitch(midiNote: i))
     }
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {
+    DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*0.4, execute: {
         for i in pitchList{
             piano.stop(at: Pitch(midiNote: i))
         }

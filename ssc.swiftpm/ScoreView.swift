@@ -15,6 +15,8 @@ struct ScoreView: View {
     // swiftui 너무 화난다.. 아니 뭔 성능때문에 안되는게존재해;
     @State var isSecondChordSelecting: Bool = false
     @State var howAccompany: HowAccompany = .Basic
+    @State var tempoBPM: Int = 120
+    let accompanyOptions: [HowAccompany] = [.Basic, .Arpeggio]
     
     var body: some View {
         ZStack {
@@ -23,8 +25,8 @@ struct ScoreView: View {
                     VStack(spacing: 0) {
                         HStack{
                             Button(action: {
-                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB, howAccompany: howAccompany)
-                                coloringChord()
+                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB, howAccompany: howAccompany, tempoBPM: tempoBPM)
+                                coloringChord(tempoSec: (120/Double(tempoBPM)))
                             }){
                                 Text("Play!")
                                     .padding()
@@ -65,7 +67,19 @@ struct ScoreView: View {
                                 .cornerRadius(10)
                                 .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 20))
                         }
-                        Spacer(minLength: geometry.size.height * 0.1)
+                        HStack{
+                            Spacer()
+                            Text("♩ = ").font(.system(size: 30, weight: .bold)).foregroundColor(.black)
+                            Picker("♩ = ", selection: $tempoBPM) {
+                                ForEach(60...180, id: \.self) { number in
+                                    Text("\(number)").tag(number).font(.system(size: 20)).foregroundColor(.black)
+                                }
+                            }
+                            .pickerStyle(.wheel)
+                            .frame(width: 70, height: 120)
+                            .padding(.trailing, 20)
+                        }
+                        Spacer(minLength: geometry.size.height * 0.05)
                         ForEach(0..<Int(ceil(Double(ChordOB.barCnt / 4))), id: \.self) { sectionIndex in
                             SectionView(ChordOB: ChordOB, ChordOB2:ChordOB2, SectionIndex: sectionIndex, isChordSelecting: $isChordSelecting, isSecondChordSelecting: $isSecondChordSelecting)
                                 .frame(height: geometry.size.height * 0.8 / (geometry.size.width > geometry.size.height ? 3 : 5))
@@ -123,7 +137,7 @@ struct ScoreView: View {
     }
     
     @State var selectIndex = 0
-    func coloringChord(){
+    func coloringChord(tempoSec: Double){
         if selectIndex == ChordOB.barCnt {
             selectIndex = 0
             return
@@ -131,22 +145,22 @@ struct ScoreView: View {
         
         if(ChordOB2.chords[selectIndex].isEnabled == false){
             ChordOB.chords[selectIndex].isSelected = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*2, execute: {
                 ChordOB.chords[selectIndex].isSelected = false
             })
         } else {
             ChordOB.chords[selectIndex].isSelected = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*1, execute: {
                 ChordOB.chords[selectIndex].isSelected = false
                 ChordOB2.chords[selectIndex].isSelected = true
             })
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*2, execute: {
                 ChordOB2.chords[selectIndex].isSelected = false
             })
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + tempoSec*2, execute: {
             selectIndex += 1
-            coloringChord()
+            coloringChord(tempoSec: tempoSec)
         })
         
     }
@@ -211,15 +225,15 @@ struct SectionView: View {
                     ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
                         .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
                         .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8, y: geometry.size.height / 2)
-
+                    
                 } else {
                     
-                        ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
-                            .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                            .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 40, y: geometry.size.height / 2)
-                        ChordView(ChordOB: ChordOB2, isChordSelecting: $isSecondChordSelecting, chordIndex: SectionIndex * 4 + index)
-                            .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
-                            .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 40, y: geometry.size.height / 2)
+                    ChordView(ChordOB: ChordOB, isChordSelecting: $isChordSelecting, chordIndex: SectionIndex * 4 + index)
+                        .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 - 40, y: geometry.size.height / 2)
+                    ChordView(ChordOB: ChordOB2, isChordSelecting: $isSecondChordSelecting, chordIndex: SectionIndex * 4 + index)
+                        .frame(width: geometry.size.width / 4, height: geometry.size.height / 2)
+                        .position(x: CGFloat(index) * geometry.size.width / 4 + geometry.size.width / 8 + 40, y: geometry.size.height / 2)
                     
                 }
                 Button(action: {
@@ -253,7 +267,7 @@ struct ChordView: View {
     @ObservedObject var ChordOB : ChordList
     @Binding var isChordSelecting: Bool
     @State var chordIndex: Int
-
+    
     var body: some View {
         Button(action: {
             withAnimation {
