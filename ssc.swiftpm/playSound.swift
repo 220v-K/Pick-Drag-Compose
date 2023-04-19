@@ -13,14 +13,14 @@ import MusicSymbol
 //    Piano.default.stopAll()
 //}
 
-func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList){
+func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList, howAccompany: HowAccompany){
 //    let piano = Piano.default
     var currentIndex = 0
 
     test()
     
     func test(){
-        playBar(chord: chords[currentIndex], chord2: chords2[currentIndex])
+        playBar(chord: chords[currentIndex], chord2: chords2[currentIndex], howAccompany: howAccompany)
         currentIndex += 1
         if currentIndex == ChordOB.barCnt {
             return
@@ -30,7 +30,7 @@ func playSong(chords: [Chord], chords2: [Chord], ChordOB: ChordList){
     
 }
 
-func playBar(chord: Chord, chord2: Chord){
+func playBar(chord: Chord, chord2: Chord, howAccompany: HowAccompany){
     let piano = Piano.default
     let noteDict: [String: Int] = ["C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11]
     // root음 설정

@@ -35,14 +35,14 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/musical77/MusicalInstrument.git", .branch("main")),
-        .package(url: "https://github.com/cemolcay/MusicTheory.git", "1.0.0"..<"2.0.0")
+//        .package(url: "https://github.com/cemolcay/MusicTheory.git", "1.0.0"..<"2.0.0")
     ],
     targets: [
         .executableTarget(
             name: "AppModule",
             dependencies: [
                 .product(name: "MusicalInstrument", package: "musicalinstrument"),
-                .product(name: "MusicTheory", package: "musictheory")
+//                .product(name: "MusicTheory", package: "musictheory")
             ],
             path: "."
         )

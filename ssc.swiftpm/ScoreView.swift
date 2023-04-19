@@ -23,7 +23,7 @@ struct ScoreView: View {
                     VStack(spacing: 0) {
                         HStack{
                             Button(action: {
-                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB)
+                                playSong(chords: ChordOB.chords, chords2: ChordOB2.chords, ChordOB: ChordOB, howAccompany: howAccompany)
                                 coloringChord()
                             }){
                                 Text("Play!")
