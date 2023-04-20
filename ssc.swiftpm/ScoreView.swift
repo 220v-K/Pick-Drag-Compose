@@ -135,15 +135,33 @@ struct ScoreView: View {
                 }
             }
             
-            if (isChordSelecting){
-                ChordSelectionView(chord: $ChordOB.chords[ChordOB.changingChordIndex], isChordSelecting: $isChordSelecting)
-                    .transition(.opacity)
-                    .animation(.easeInOut)
-            }
-            if (isSecondChordSelecting){
-                ChordSelectionView(chord: $ChordOB2.chords[ChordOB2.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
-                    .transition(.opacity)
-                    .animation(.easeInOut)
+            
+            if (isAdvanced){
+                if (isChordSelecting){
+                    withAnimation(.easeInOut){
+                        ChordSelectionView(chord: $ChordOB.chords[ChordOB.changingChordIndex], isChordSelecting: $isChordSelecting)
+                            .transition(.opacity)
+                    }
+                }
+                if (isSecondChordSelecting){
+                    withAnimation(.easeInOut){
+                        ChordSelectionView(chord: $ChordOB2.chords[ChordOB2.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
+                            .transition(.opacity)
+                    }
+                }
+            } else {
+                if (isChordSelecting){
+                    withAnimation(.easeInOut){
+                        ChordSelectionView_Basic(chord: $ChordOB.chords[ChordOB.changingChordIndex], isChordSelecting: $isChordSelecting)
+                            .transition(.opacity)
+                    }
+                }
+                if (isSecondChordSelecting){
+                    withAnimation(.easeInOut){
+                        ChordSelectionView_Basic(chord: $ChordOB2.chords[ChordOB2.changingChordIndex], isChordSelecting: $isSecondChordSelecting)
+                            .transition(.opacity)
+                    }
+                }
             }
         }
     }
