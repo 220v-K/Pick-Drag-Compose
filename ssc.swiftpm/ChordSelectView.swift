@@ -21,10 +21,49 @@ struct ChordSelectionView: View {
                     }
                 }
             VStack {
+                ZStack{
+                    switch chord.inversion{
+                    case 1:
+                        Text("1st").font(.system(size: 13, weight: .bold))
+                            .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-20)
+                    case 2:
+                        Text("2nd").font(.system(size: 13, weight: .bold))
+                            .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-20)
+                    case 3:
+                        Text("3rd").font(.system(size: 13, weight: .bold))
+                            .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-20)
+                    default:
+                        Text("").font(.system(size: 13, weight: .bold))
+                            .padding(.horizontal, 10)
+                    }
+                    if(chord.octave != 4){
+                        Text("Oct. \(chord.octave)").font(.system(size: 13, weight: .bold))
+                            .padding(.horizontal, 10).foregroundColor(.gray).offset(x:20, y:-36)
+                    }
                 // 1. Display current chord status
                 Text(chord.text)
                     .font(.system(size: 30, weight: .bold))
-                    .padding(.vertical, 20)
+                    .padding(.vertical, 20).padding(.top, 20)
+                    
+                    HStack{
+                        if(chord.extend_nineth||chord.extend_eleventh||chord.extend_thirteenth){
+                            Text("add").font(.system(size: 13, weight: .bold))
+                                .padding(.trailing, 1).foregroundColor(.gray)
+                        }
+                        if(chord.extend_nineth){
+                            Text("9").font(.system(size: 13, weight: .bold))
+                                .padding(.trailing, 1).foregroundColor(.gray)
+                        }
+                        if(chord.extend_eleventh){
+                            Text("11").font(.system(size: 13, weight: .bold))
+                                .padding(.trailing, 1).foregroundColor(.gray)
+                        }
+                        if(chord.extend_thirteenth){
+                            Text("13").font(.system(size: 13, weight: .bold))
+                                .padding(.trailing, 1).foregroundColor(.gray)
+                        }
+                    }.offset(x:-25, y:30)
+                }
                 
                 // Change Chord's Inversion
                 HStack{
@@ -235,10 +274,8 @@ struct ChordSelectionView: View {
                                     .stroke(Color.black, lineWidth: 1))
                     }
                 }
-                .padding(.top)
-                
-                Spacer()
-                
+                .padding(.top).padding(.bottom)
+                            
                 // 완료 버튼
                 HStack{
                     Button(action: {
